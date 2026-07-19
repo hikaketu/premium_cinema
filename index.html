@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プレミアムシネマファン</title>
+
+<style>
+body{
+    margin:0;
+    background:#111;
+    color:white;
+    font-family:sans-serif;
+}
+header{
+    background:#003366;
+    padding:20px;
+}
+h1{
+    margin:0;
+}
+nav{
+    background:#222;
+    padding:10px;
+}
+nav a{
+    color:white;
+    margin-right:20px;
+    text-decoration:none;
+}
+main{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+.card{
+    background:#1e1e1e;
+    padding:20px;
+    margin:20px 0;
+    border-radius:10px;
+}
+button{
+    padding:10px 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>プレミアムシネマファン</h1>
+</header>
+
+<nav>
+<a href="#">放送予定</a>
+<a href="#">映画カレンダー</a>
+<a href="#">シネフィルコラム</a>
+<a href="#">作品検索</a>
+</nav>
+
+<main>
+
+<div class="card">
+<h2>最新放送予定</h2>
+<div id="movies">
+読み込み中...
+</div>
+</div>
+
+<div class="card">
+<h2>映画カレンダー</h2>
+<div id="calendar"></div>
+</div>
+
+<div class="card">
+<h2>シネフィルコラム</h2>
+
+<h3>今週の一本</h3>
+
+<p>
+映画の見どころや監督紹介などを掲載できます。
+</p>
+
+</div>
+
+</main>
+
+<script>
+document.getElementById("movies").innerHTML =
+"ここに放送予定を表示";
+
+document.getElementById("calendar").innerHTML =
+"カレンダー表示";
+</script>
+
+</body>
+  </html>
