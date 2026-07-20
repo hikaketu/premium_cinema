@@ -7,14 +7,14 @@
     <style>
         /* --- カラー変数と基本設定 (画像の色を完全再現) --- */
         :root {
-            --bg-main: #141414;      /* 全体の背景（ほぼ黒） */
-            --bg-header: #222222;    /* ヘッダーの背景 */
+            --bg-main: #222222;      /* 全体の背景（画像内の濃いグレー） */
+            --bg-header: #1a1a1a;    /* ヘッダーの背景（黒に近いグレー） */
             --bg-section: #333333;   /* セクション見出しの背景 */
-            --bg-card: #282828;      /* リストアイテムの背景 */
+            --bg-card: #2a2a2a;      /* リストアイテムの背景 */
             --color-orange: #e59b3c;  /* 選択時・帯のオレンジ */
             --text-main: #ffffff;    /* メイン文字色（白） */
-            --text-sub: #aaaaaa;     /* サブ文字色（薄いグレー） */
-            --border-color: #3e3e3e; /* 枠線・区切り線 */
+            --text-sub: #999999;     /* サブ文字色（薄いグレー） */
+            --border-color: #151515; /* 枠線・区切り線 */
         }
 
         * {
@@ -24,7 +24,7 @@
         }
 
         body {
-            background-color: var(--bg-main);
+            background-color: #111111;
             color: var(--text-main);
             font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
             display: flex;
@@ -34,11 +34,11 @@
         /* PC・タブレット・スマホ対応のコンテナ枠 */
         .app-container {
             width: 100%;
-            max-width: 640px; /* 画像のスマートな縦長感をPCでも維持する最大幅 */
+            max-width: 640px;
             background-color: var(--bg-main);
             min-height: 100vh;
-            border-left: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
+            border-left: 1px solid #333;
+            border-right: 1px solid #333;
             position: relative;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
@@ -50,7 +50,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 12px;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .logo-area {
@@ -85,8 +85,8 @@
             color: var(--color-orange);
         }
         .nav-item svg {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             fill: currentColor;
         }
 
@@ -130,7 +130,6 @@
             font-size: 14px;
             font-weight: bold;
         }
-        /* アクティブなスライドの三角形突起 */
         .slide-title-bar::before {
             content: '';
             position: absolute;
@@ -155,13 +154,13 @@
             width: 8px;
             height: 8px;
             background-color: #555;
-            border-radius: 2px; /* 画像に合わせたやや四角いドット */
+            border-radius: 1px;
         }
         .dot.active {
             background-color: var(--color-orange);
         }
 
-        /* --- 特設バナーエリア（画像のデザイン完全再現） --- */
+        /* --- 特設バナーエリア --- */
         .banner-container {
             display: flex;
             gap: 10px;
@@ -184,26 +183,48 @@
             align-items: center;
             line-height: 1.3;
         }
-        .banner-blue {
-            color: #1f78b4;
-        }
-        .banner-orange {
-            color: #e31a1c;
-        }
-        .banner span {
-            font-size: 9px;
-            color: #666;
-            font-weight: normal;
-        }
+        .banner-blue { color: #1f78b4; }
+        .banner-orange { color: #e31a1c; }
+        .banner span { font-size: 9px; color: #666; font-weight: normal; }
 
-        /* --- セクションタイトル --- */
-        .section-title {
+        /* --- セクションタイトル＆プレミアムなチャンネル切替タブ --- */
+        .section-header {
             background-color: var(--bg-section);
-            padding: 8px 12px;
-            font-size: 14px;
-            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid var(--border-color);
             border-top: 1px solid var(--border-color);
+        }
+        .section-title {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #ddd;
+            font-weight: bold;
+        }
+        .tab-container {
+            display: flex;
+            height: 100%;
+            padding-right: 8px;
+        }
+        .tab-button {
+            background: none;
+            border: none;
+            color: #888;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 3px;
+            margin: 4px 2px;
+        }
+        .tab-button:hover {
+            color: #fff;
+        }
+        .tab-button.active {
+            background-color: var(--color-orange);
+            color: #000;
         }
 
         /* --- 今週の放送する映画 リスト --- */
@@ -243,12 +264,13 @@
             bottom: 2px;
             left: 2px;
             font-size: 8px;
-            padding: 1px 3px;
+            padding: 1px 4px;
             border-radius: 2px;
             color: #fff;
             font-weight: bold;
         }
-        .badge-premium { background-color: #d9534f; }
+        .badge-bs { background-color: #1f78b4; }
+        .badge-4k { background-color: #e59b3c; color: #000; }
 
         .movie-info {
             flex-grow: 1;
@@ -258,6 +280,7 @@
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 4px;
+            color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -265,25 +288,25 @@
         .movie-desc {
             font-size: 11px;
             color: var(--text-sub);
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .movie-date {
             font-size: 11px;
-            color: var(--color-orange);
+            color: #bbb;
         }
 
         .arrow-icon {
             color: var(--text-sub);
-            font-size: 18px;
+            font-size: 14px;
             margin-left: 8px;
         }
 
         /* --- 詳細モーダルウィンドウ --- */
         .modal-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -302,11 +325,11 @@
             pointer-events: auto;
         }
         .modal-content {
-            background-color: var(--bg-header);
-            width: 85%;
+            background-color: #222;
+            width: 90%;
             max-width: 500px;
             border-radius: 6px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #444;
             overflow: hidden;
             position: relative;
         }
@@ -317,6 +340,7 @@
             font-size: 24px;
             cursor: pointer;
             color: var(--text-sub);
+            z-index: 10;
         }
         .modal-img {
             width: 100%;
@@ -347,7 +371,6 @@
             line-height: 1.5;
         }
 
-        /* タブレット・PCでの見栄えを調整するレスポンシブ用の微調整 */
         @media (min-width: 641px) {
             .app-container {
                 margin: 20px 0;
@@ -364,49 +387,57 @@
         <!-- ヘッダー -->
         <header>
             <div class="logo-area">
-                <!-- 左上に配置するプレミアムシネマのロゴ画像 (パスは環境に合わせて調整してください) -->
-                <img src="premium_cinema_logo.png" alt="NHK プレミアムシネマ" onerror="this.src='https://placehold.co/300x100/000000/e59b3c?text=Premium+Cinema'">
+                <img src="premium_cinema_logo.png" alt="NHK プレミアムシネマ" onerror="this.src='https://placehold.co/300x100/1a1a1a/e59b3c?text=Premium+Cinema'">
             </div>
             <nav class="nav-menu">
-                <!-- ジャンル ➔ シネフィルコラム -->
                 <a href="https://www.nhk.jp/g/ts/K8649395M1/blog/bl/p5D796g6OV/" target="_blank" class="nav-item">
                     <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
-                    シネフィルコラム
+                    シネフィル・コラム
                 </a>
-                <!-- 検索 ➔ 映画カレンダー -->
                 <a href="https://www.nhk.jp/g/ts/K8649395M1/blog/bl/pLAv8dgRAB/" target="_blank" class="nav-item">
                     <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     映画カレンダー
                 </a>
-                <!-- マイコンテンツ ➔ リクエスト -->
-                <a href="https://www.nhk.or.jp/uts/premium_cinema/form.html" target="_blank" class="nav-item">
+                <a href="" target="_blank" class="nav-item">
                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                     リクエスト
                 </a>
-                <!-- その他 ➔ BS放送をみるには -->
                 <a href="https://www.nhk-cs.jp/jushinryo/stories/010/" target="_blank" class="nav-item">
                     <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-                    BS放送をみるには
+                    BS放送をみるにはhttps://www.nhk.or.jp/uts/premium_cinema/form.html
                 </a>
             </nav>
         </header>
 
         <!-- おすすめ映画 自動スライダーエリア -->
         <div class="slider-section">
-            <div class="slider-container" id="sliderContainer">
-                <!-- JavaScriptで動的に挿入されます -->
-            </div>
-            <!-- インジケータードット -->
+            <div class="slider-container" id="sliderContainer"></div>
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
-  
+        <!-- 特設バナー -->
+        <div class="banner-container">
+            <div class="banner">
+                <div class="banner-orange">見逃し見放題パック</div>
+                <span>月額945円(税込)</span>
+            </div>
+            <div class="banner">
+                <div class="banner-blue">特選見放題パック</div>
+                <span>月額945円(税込)</span>
+            </div>
+        </div>
 
-        <!-- 今週の放送する映画 セクション -->
-        <div class="section-title">今週の放送する映画</div>
+        <!-- 今週の放送する映画 セクション（タブ付き） -->
+        <div class="section-header">
+            <div class="section-title">今週の放送する映画</div>
+            <div class="tab-container">
+                <button class="tab-button active" id="tabBS" onclick="switchChannel('s1')">BS</button>
+                <button class="tab-button" id="tab4K" onclick="switchChannel('s5')">BSP4K</button>
+            </div>
+        </div>
+        
         <div class="movie-list" id="movieList">
-            <!-- APIまたはモックデータから自動更新されるエリア -->
-            <div style="padding: 20px; text-align: center; color: var(--text-sub);">番組表を読み込み中...</div>
+            <!-- 選択されたチャンネルのデータがここに表示されます -->
         </div>
 
     </div>
@@ -419,7 +450,7 @@
             <div class="modal-body">
                 <div class="modal-title" id="modalTitle">作品タイトル</div>
                 <div class="modal-time" id="modalTime">放送時間</div>
-                <div class="modal-text" id="modalText">作品のあらすじ・詳細情報がここに表示されます。</div>
+                <div class="modal-text" id="modalText">作品の詳細情報</div>
             </div>
         </div>
     </div>
@@ -427,59 +458,39 @@
     <!-- 制御スクリプト -->
     <script>
         // --- 1. NHK番組表API 設定 ---
-        // 実際のAPIを使う場合はここにAPIキーを入力してください
-        const NHK_API_KEY = 'TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn'; 
+        const NHK_API_KEY = 'TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn'; // 実際のAPIキーがあればここに入力
         const AREA = '130';    // 東京
-        const SERVICE = 'tv'; // NHK BS (映画枠含むメインBS)
+        let currentService = 's1'; // 現在選択されているサービス (s1: BS, s5: BSP4K)
         
-        // --- 2. モックデータ (APIが空、またはエラーの際の高精度フォールバック) ---
-        const mockMovies = [
-            {
-                id: "m1",
-                title: "ニュー・シネマ・パラダイス",
-                desc: "映画を愛した少年と映写技師の心温まる不朽の名作。",
-                date: "7月21日（火） 21:00",
-                img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&q=80"
-            },
-            {
-                id: "m2",
-                title: "インセプション",
-                desc: "他人の夢の中に潜入してアイデアを植え付けるSFアクション。",
-                date: "7月23日（木） 22:15",
-                img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=80"
-            },
-            {
-                id: "m3",
-                title: "ローマの休日",
-                desc: "王女と新聞記者の切ない一日限りの恋を描いた名作ロマンス。",
-                date: "7月25日（土） 13:00",
-                img: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=500&q=80"
-            },
-            {
-                id: "m4",
-                title: "七人の侍",
-                desc: "黒澤明監督が放つ、壮絶なアクションと人間ドラマの最高峰。",
-                date: "7月26日（日） 19:30",
-                img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&q=80"
-            }
-        ];
+        // --- 2. モックデータ (BSとBSP4Kそれぞれの初期・フォールバックデータ) ---
+        const mockData = {
+            's1': [
+                { id: "m1", title: "あまちゃん", desc: "1回 おら、この海が好きだ！", date: "2013年放送", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80", type: "BS" },
+                { id: "m2", title: "Nスペ 病の起源 2013", desc: "プロローグ 人類進化700万年の宿命", date: "5月18日（土） 21:40", img: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=500&q=80", type: "BS" },
+                { id: "m3", title: "BS歴史館", desc: "シリーズ 新発見！再現・幻の江戸城大奥", date: "毎週木曜 20:00", img: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=500&q=80", type: "BS" }
+            ],
+            's5': [
+                { id: "m4", title: "【4Kシアター】アラビアのロレンス", desc: "壮大な砂漠を舞台に描かれる、歴史のうねりと男の孤独。", date: "7月24日（金） 20:00", img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&q=80", type: "4K" },
+                { id: "m5", title: "【4Kシネマ】グランド・ブダペスト・ホテル", desc: "美しくコミカルな映像美で描かれる、高級ホテルの名高きコンシェルジュの物語。", date: "7月26日（日） 14:00", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80", type: "4K" }
+            ]
+        };
 
-        // --- 3. おすすめ映画（上部スライダー用データ） ---
+        // --- 3. おすすめ映画（上部スライダー用） ---
         const featuredMovies = [
-            { title: "あまちゃん 総集編", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&q=80", desc: "画像再現用：東北の海を舞台にアイドルを目指す少女の奮闘記。" },
-            { title: "銀河鉄道の夜", img: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=600&q=80", desc: "宮沢賢治の原作を幻想的に描いた名作アニメーションーション映画。" },
-            { title: "風の谷のナウシカ", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80", desc: "文明の崩壊した世界で、自然と共生しようとする少女の物語。" }
+            { title: "あまちゃん", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&q=80", desc: "東北の海を舞台に、アイドルを目指して奮闘する少女の成長物語。" },
+            { title: "ニュー・シネマ・パラダイス", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80", desc: "映画を愛した少年と、古びた映画館の映写技師が織りなす感動の不朽の名作。" },
+            { title: "銀河鉄道の夜", img: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?w=600&q=80", desc: "宮沢賢治の同名小説をベースに、美しく幻想的に描いた名作アニメーション映画。" }
         ];
 
         // --- 4. 初期化処理 ---
+        let currentSlide = 0;
         document.addEventListener("DOMContentLoaded", () => {
             initSlider();
-            loadProgramTable();
+            updateDisplay(); // 初回表示のロード
             initModal();
         });
 
         // --- 5. カルーセルスライダーの実装 ---
-        let currentSlide = 0;
         function initSlider() {
             const container = document.getElementById("sliderContainer");
             const dotsContainer = document.getElementById("sliderDots");
@@ -488,23 +499,20 @@
             dotsContainer.innerHTML = "";
 
             featuredMovies.forEach((movie, index) => {
-                // スライド作成
                 const slide = document.createElement("div");
                 slide.className = "slide";
                 slide.innerHTML = `
                     <img src="${movie.img}" alt="${movie.title}">
                     <div class="slide-title-bar">${movie.title}</div>
                 `;
-                slide.addEventListener("click", () => openModal(movie.title, "おすすめ映画公開中", movie.desc, movie.img));
+                slide.addEventListener("click", () => openModal(movie.title, "おすすめ映画", movie.desc, movie.img));
                 container.appendChild(slide);
 
-                // ドット作成
                 const dot = document.createElement("div");
                 dot.className = `dot ${index === 0 ? 'active' : ''}`;
                 dotsContainer.appendChild(dot);
             });
 
-            // 自動スライドタイマー (3.5秒ごと)
             setInterval(() => {
                 currentSlide = (currentSlide + 1) % featuredMovies.length;
                 updateSlider();
@@ -513,7 +521,7 @@
 
         function updateSlider() {
             const container = document.getElementById("sliderContainer");
-            container.style.transform = `translateX(-${currentSlide * 100}%)`;
+            if(container) container.style.transform = `translateX(-${currentSlide * 100}%)`;
             
             const dots = document.querySelectorAll(".slider-dots .dot");
             dots.forEach((dot, idx) => {
@@ -522,56 +530,49 @@
             });
         }
 
-        // --- 6. 番組表の自動更新（API ＆ モック処理） ---
-        async function loadProgramTable() {
-            const listContainer = document.getElementById("movieList");
+        // --- 6. チャンネル切り替えロジック ---
+        function switchChannel(serviceId) {
+            currentService = serviceId;
             
-            if (!NHK_API_KEY) {
-                // APIキーがない場合はモックデータで自動描画
-                renderMovies(mockMovies);
-                return;
-            }
+            // タブのボタンの見た目を更新
+            document.getElementById("tabBS").classList.toggle("active", serviceId === 's1');
+            document.getElementById("tab4K").classList.toggle("active", serviceId === 's5');
+            
+            updateDisplay();
+        }
 
-            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-            const url = `https://api.nhk.or.jp/v2/pg/list/${AREA}/${SERVICE}/${today}.json?key=${NHK_API_KEY}`;
+        function updateDisplay() {
+            // まずは即座に選択されたチャンネルのモックデータを表示して描画バグを防ぐ
+            renderMovies(mockData[currentService]);
+
+            // APIキーが存在すればバックグラウンドで最新データをロードしにいく
+            if (NHK_API_KEY) {
+                loadProgramTable(currentService);
+            }
+        }
+
+        // --- 7. 番組表の自動更新処理 ---
+        async function loadProgramTable(service) {
+            const today = new Date().toISOString().split('T')[0];
+            const url = `https://api.nhk.or.jp/v2/pg/list/${AREA}/${service}/${today}.json?key=${NHK_API_KEY}`;
 
             try {
                 const response = await fetch(url);
-                if (!response.ok) throw new Error("APIアクセスエラー");
+                if (!response.ok) throw new Error();
                 const data = await response.json();
                 
-                // NHK APIのデータ構造から映画（ジャンルコード: 0600近辺）をフィルタリングして整形
-                const programs = data.list[SERVICE];
+                const programs = data.list[service];
+                // 映画ジャンル「0600」に該当するものを抽出
                 const moviePrograms = programs.filter(p => p.genre && p.genre.includes("0600")).map(p => {
                     return {
                         id: p.id,
                         title: p.title,
                         desc: p.subtitle || p.content,
                         date: formatNHKDate(p.start_time),
-                        img: p.service.logo_l.url || "https://placehold.co/100x65/333/fff?text=映画"
+                        img: p.service.logo_l.url || "https://placehold.co/100x65/333/fff?text=映画",
+                        type: service === 's1' ? "BS" : "4K"
                     };
                 });
 
-                if(moviePrograms.length === 0) {
-                    listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-sub);">本日の映画放送予定はありません。</div>`;
-                } else {
-                    renderMovies(moviePrograms);
-                }
-
-            } catch (error) {
-                console.warn("NHK APIの取得に失敗したため、今週の予定（キャッシュ）を表示します:", error);
-                renderMovies(mockMovies);
-            }
-        }
-
-        function renderMovies(movies) {
-            const listContainer = document.getElementById("movieList");
-            listContainer.innerHTML = "";
-
-            movies.forEach(movie => {
-                const item = document.createElement("div");
-                item.className = "movie-item";
-                item.innerHTML = `
-                    <div class="movie-thumb">
-                        <img src="${movie.img}" alt="${movie.title}">
-                        <span class="bad
+                // リクエスト中にユーザーが別のタブに切り替えていなければ画面に反映
+                if(moviePrograms.length > 0 && currentSer
