@@ -182,11 +182,14 @@
                 `;
                 container.appendChild(li);
             });
-        } catch (error) {
-            console.error("APIの読み込みに失敗しました:", error);
-            document.getElementById('hero-title').textContent = "データ取得エラー";
+                } catch (error) {
+            // タブレットの画面にアラート（警告ウインドウ）でエラーを表示します
+            alert("エラーの原因: " + error);
+            
+            // 画面の「読み込み中...」の場所にもエラーを書きます
+            document.getElementById('hero-title').textContent = "エラー: " + error.message;
         }
-    }
+
 
     // ページ読み込み時に自動実行
     document.addEventListener('DOMContentLoaded', updateProgramList);
