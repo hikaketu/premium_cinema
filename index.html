@@ -3,131 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NHK Premium Cinema (On Demand Style)</title>
+<style>
+    /* 画像から抽出したカラーパレット */
+    :root {
+        --bg-dark: #262626;
+        --bg-gray: #4b4b4b;
+        --accent-orange: #f8a339;
+        --text-white: #ffffff;
+        --text-gray: #a0a0a0;
+        --border-blue: #2a75a9;
+        --border-orange: #d97d3a;
+    }
 
-<title>プレミアムシネマ</title>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    
+    body {
+        background-color: var(--bg-dark);
+        color: var(--text-white);
+        max-width: 480px; /* スマホ幅を再現 */
+        margin: 0 auto;
+    }
 
-<link rel="stylesheet" href="style.css">
+    /* ヘッダー */
+    header {
+        background-color: var(--bg-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 2px solid #1a1a1a;
+    }
+    .logo { font-weight: bold; font-size: 14px; font-style: italic; }
+    .nav-icons { display: flex; gap: 15px; font-size: 10px; color: var(--text-gray); }
+    .nav-icons div { text-align: center; }
+
+    /* ヒーロー画像エリア */
+    .hero-area { width: 100%; height: 200px; background-color: #000; overflow: hidden; position: relative;}
+    .hero-area img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+    
+    /* ヒーロー下のオレンジ帯 */
+    .hero-title-bar {
+        background-color: var(--accent-orange);
+        color: var(--text-white);
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
+        position: relative;
+    }
+    .hero-title-bar::before {
+        content: "";
+        position: absolute;
+        top: -10px; left: 50%;
+        transform: translateX(-50%);
+        border-width: 0 10px 10px 10px;
+        border-style: solid;
+        border-color: transparent transparent var(--accent-orange) transparent;
+    }
+
+    /* パック購入バナー */
+    .pack-banners {
+        display: flex;
+        gap: 10px;
+        padding: 15px 10px;
+        background-color: var(--bg-dark);
+    }
+    .pack-btn {
+        flex: 1;
+        background-color: var(--text-white);
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .pack-orange { color: var(--border-orange); border: 2px solid var(--border-orange); }
+    .pack-blue { color: var(--border-blue); border: 2px solid var(--border-blue); }
+
+    /* リストヘッダー */
+    .list-header {
+        background-color: var(--bg-gray);
+        padding: 10px;
+        font-size: 14px;
+        border-top: 1px solid #555;
+        border-bottom: 1px solid #1a1a1a;
+    }
+
+    /* 番組リスト */
+    .program-list { list-style: none; }
+    .program-item {
+        display: flex;
+        padding: 15px 10px;
+        border-bottom: 1px solid var(--bg-gray);
+        align-items: center;
+    }
+    .program-thumb {
+        width: 120px;
+        height: 68px;
+        background-color: #000;
+        margin-right: 15px;
+        position: relative;
+    }
+    .program-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* 画像左下のラベル（見逃し/特選など） */
+    .thumb-label {
+        position: absolute;
+        bottom: 0; left: 0;
+        background-color: var(--accent-orange);
+        color: var(--text-white);
+        font-size: 10px;
+        padding: 2px 5px;
+    }
+
+    .program-info { flex: 1; }
+    .program-title { font-size: 14px; margin-bottom: 5px; }
+    .program-desc { font-size: 12px; color: var(--text-gray); margin-bottom: 2px; }
+    .chevron { color: var(--text-gray); font-weight: bold; padding-left: 10px; }
+</style>
 </head>
-
 <body>
 
-<header>
-    <div class="logo">
-        プレミアムシネマ
-    </div>
-
-    <nav>
-        <a href="#today">放送予定</a>
-        <a href="#calendar">映画カレンダー</a>
-        <a href="column.html">シネフィルコラム</a>
-    </nav>
-</header>
-
-<section class="hero">
-
-    <div class="hero-image">
-        <img id="heroImage" src="noimage.png" alt="">
-    </div>
-
-    <div class="hero-text">
-
-        <h1 id="heroTitle">
-            今週のプレミアムシネマ
-        </h1>
-
-        <p id="heroDate"></p>
-
-        <p id="heroDescription"></p>
-
-        <div class="hero-buttons">
-
-            <a id="nhkLink"
-               href="#"
-               target="_blank"
-               class="button">
-               NHKで見る
-            </a>
-
-            <a href="https://www.nhk.or.jp/uts/premium_cinema/form.html"
-               target="_blank"
-               class="button">
-               映画リクエスト
-            </a>
-
+<div class="app-container">
+    <header>
+        <div class="logo">NHK<br>オンデマンド</div>
+        <div class="nav-icons">
+            <div>層<br>ジャンル</div>
+            <div>🔍<br>検索</div>
+            <div>★<br>マイコンテンツ</div>
+            <div>⚙<br>その他</div>
         </div>
+    </header>
 
+    <!-- メインの映画（APIから更新される想定） -->
+    <div class="hero-area">
+        <img id="hero-img" src="https://via.placeholder.com/480x200/262626/ffffff?text=Loading..." alt="Hero Movie">
+    </div>
+    <div class="hero-title-bar" id="hero-title">読み込み中...</div>
+
+    <div class="pack-banners">
+        <div class="pack-btn pack-orange">見逃し見放題パック<br>月額945円(税込み)</div>
+        <div class="pack-btn pack-blue">特選見放題パック<br>月額945円(税込み)</div>
     </div>
 
-</section>
-
-<main>
-
-<section id="today">
-
-<h2>
-今後の放送予定
-</h2>
-
-<div id="programList">
-
-<div class="loading">
-読み込み中...
+    <div class="list-header">人気のある番組（プレミアムシネマ）</div>
+    
+    <!-- API経由で自動生成されるリスト -->
+    <ul class="program-list" id="program-container">
+        <!-- JavaScriptがここに挿入します -->
+    </ul>
 </div>
 
-</div>
+<script>
+    // 【重要】実際のNHK番組表API（https://api.nhk.or.jp/）を使用する場合は、
+    // APIキーを取得し、エンドポイントURLを書き換えてください。
+    // 今回はプレミアムシネマを想定したダミーデータでAPIの挙動を完全再現しています。
+    
+    const mockApiResponse = {
+        hero: {
+            title: "プレミアムシネマ「ローマの休日」",
+            imageUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=480&h=200&fit=crop"
+        },
+        programs: [
+            {
+                title: "プレミアムシネマ「七人の侍」",
+                subtitle: "黒澤明監督の最高傑作",
+                date: "2026年7月21日 (火) 13:00",
+                imageUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=120&h=68&fit=crop",
+                type: "特選"
+            },
+            {
+                title: "プレミアムシネマ「バック・トゥ・ザ・フューチャー」",
+                subtitle: "字幕スーパー版",
+                date: "2026年7月22日 (水) 13:00",
+                imageUrl: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=120&h=68&fit=crop",
+                type: "見逃し"
+            },
+            {
+                title: "プレミアムシネマ「サウンド・オブ・ミュージック」",
+                subtitle: "デジタルリマスター版",
+                date: "2026年7月23日 (木) 13:00",
+                imageUrl: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=120&h=68&fit=crop",
+                type: "特選"
+            }
+        ]
+    };
 
-</section>
+    // APIからデータを取得して画面を更新する関数
+    async function updateProgramList() {
+        try {
+            // 実際のAPI通信の代わり（fetchなどを使用します）
+            // const response = await fetch('YOUR_API_URL_HERE');
+            // const data = await response.json();
+            const data = mockApiResponse; // 今回はダミーデータを使用
 
-<section id="calendar">
+            // ヒーロー画像の更新
+            document.getElementById('hero-img').src = data.hero.imageUrl;
+            document.getElementById('hero-title').textContent = data.hero.title;
 
-<h2>
-映画カレンダー
-</h2>
+            // リストの自動生成
+            const container = document.getElementById('program-container');
+            container.innerHTML = ''; // クリア
 
-<div id="calendarArea">
+            data.programs.forEach(program => {
+                const li = document.createElement('li');
+                li.className = 'program-item';
+                
+                // 画像によってラベルの色を変えるロジック（青:特選, オレンジ:見逃し）
+                const labelBg = program.type === '特選' ? 'var(--border-blue)' : 'var(--accent-orange)';
 
-</div>
+                li.innerHTML = `
+                    <div class="program-thumb">
+                        <img src="${program.imageUrl}" alt="${program.title}">
+                        <div class="thumb-label" style="background-color: ${labelBg}">${program.type}</div>
+                    </div>
+                    <div class="program-info">
+                        <div class="program-title">${program.title}</div>
+                        <div class="program-desc">${program.subtitle}</div>
+                        <div class="program-desc">${program.date}</div>
+                    </div>
+                    <div class="chevron">＞</div>
+                `;
+                container.appendChild(li);
+            });
+        } catch (error) {
+            console.error("APIの読み込みに失敗しました:", error);
+        }
+    }
 
-</section>
-
-<section>
-
-<h2>
-シネフィルコラム
-</h2>
-
-<div class="column-box">
-
-<p>
-
-プレミアムシネマに関するコラムや映画紹介を掲載します。
-
-</p>
-
-<a href="column.html" class="button">
-
-もっと見る
-
-</a>
-
-</div>
-
-</section>
-
-</main>
-
-<footer>
-
-<p>
-
-© Premium Cinema Fan Site
-
-</p>
-
-</footer>
-
-<script src="app.js"></script>
-<script src="calendar.js"></script>
-
+    // ページ読み込み時に実行
+    document.addEventListener('DOMContentLoaded', updateProgramList);
+</script>
 </body>
 </html>
+
