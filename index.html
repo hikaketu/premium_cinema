@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NHK Premium Cinema (On Demand Style)</title>
 <style>
-    /* 画像から抽出したカラーパレット */
     :root {
         --bg-dark: #262626;
         --bg-gray: #4b4b4b;
@@ -21,11 +20,10 @@
     body {
         background-color: var(--bg-dark);
         color: var(--text-white);
-        max-width: 480px; /* スマホ幅を再現 */
+        max-width: 480px;
         margin: 0 auto;
     }
 
-    /* ヘッダー */
     header {
         background-color: var(--bg-gray);
         display: flex;
@@ -38,11 +36,9 @@
     .nav-icons { display: flex; gap: 15px; font-size: 10px; color: var(--text-gray); }
     .nav-icons div { text-align: center; }
 
-    /* ヒーロー画像エリア */
     .hero-area { width: 100%; height: 200px; background-color: #000; overflow: hidden; position: relative;}
     .hero-area img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
     
-    /* ヒーロー下のオレンジ帯 */
     .hero-title-bar {
         background-color: var(--accent-orange);
         color: var(--text-white);
@@ -61,7 +57,6 @@
         border-color: transparent transparent var(--accent-orange) transparent;
     }
 
-    /* パック購入バナー */
     .pack-banners {
         display: flex;
         gap: 10px;
@@ -79,7 +74,6 @@
     .pack-orange { color: var(--border-orange); border: 2px solid var(--border-orange); }
     .pack-blue { color: var(--border-blue); border: 2px solid var(--border-blue); }
 
-    /* リストヘッダー */
     .list-header {
         background-color: var(--bg-gray);
         padding: 10px;
@@ -88,7 +82,6 @@
         border-bottom: 1px solid #1a1a1a;
     }
 
-    /* 番組リスト */
     .program-list { list-style: none; }
     .program-item {
         display: flex;
@@ -105,7 +98,6 @@
     }
     .program-thumb img { width: 100%; height: 100%; object-fit: cover; }
     
-    /* 画像左下のラベル（見逃し/特選など） */
     .thumb-label {
         position: absolute;
         bottom: 0; left: 0;
@@ -134,9 +126,8 @@
         </div>
     </header>
 
-    <!-- メインの映画（APIから更新される想定） -->
     <div class="hero-area">
-        <img id="hero-img" src="https://via.placeholder.com/480x200/262626/ffffff?text=Loading..." alt="Hero Movie">
+        <img id="hero-img" src="" alt="Hero Movie">
     </div>
     <div class="hero-title-bar" id="hero-title">読み込み中...</div>
 
@@ -147,73 +138,39 @@
 
     <div class="list-header">人気のある番組（プレミアムシネマ）</div>
     
-    <!-- API経由で自動生成されるリスト -->
     <ul class="program-list" id="program-container">
-        <!-- JavaScriptがここに挿入します -->
+        <!-- JavaScriptがここにリストを自動挿入します -->
     </ul>
 </div>
 
+<!-- ここから下がJavaScriptの処理です -->
 <script>
-    // 【重要】実際のNHK番組表API（https://api.nhk.or.jp/）を使用する場合は、
-    // APIキーを取得し、エンドポイントURLを書き換えてください。
-    // 今回はプレミアムシネマを想定したダミーデータでAPIの挙動を完全再現しています。
-    
-    const mockApiResponse = {
-        hero: {
-            title: "プレミアムシネマ「ローマの休日」",
-            imageUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=480&h=200&fit=crop"
-        },
-        programs: [
-            {
-                title: "プレミアムシネマ「七人の侍」",
-                subtitle: "黒澤明監督の最高傑作",
-                date: "2026年7月21日 (火) 13:00",
-                imageUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=120&h=68&fit=crop",
-                type: "特選"
-            },
-            {
-                title: "プレミアムシネマ「バック・トゥ・ザ・フューチャー」",
-                subtitle: "字幕スーパー版",
-                date: "2026年7月22日 (水) 13:00",
-                imageUrl: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=120&h=68&fit=crop",
-                type: "見逃し"
-            },
-            {
-                title: "プレミアムシネマ「サウンド・オブ・ミュージック」",
-                subtitle: "デジタルリマスター版",
-                date: "2026年7月23日 (木) 13:00",
-                imageUrl: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=120&h=68&fit=crop",
-                type: "特選"
-            }
-        ]
-    };
-
-    // APIからデータを取得して画面を更新する関数
     async function updateProgramList() {
         try {
-            // 実際のAPI通信の代わり（fetchなどを使用します）
-            // const response = await fetch('YOUR_API_URL_HERE');
-            // const data = await response.json();
-            const data = mockApiResponse; // 今回はダミーデータを使用
+            // ▼▼▼ ① ここに実際の番組表APIのURLを入れてください ▼▼▼
+            const apiUrl = '【https://program-api.nhk.jp/v3/papiPgNowTv?service=tv&area=130&key=TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn】';
+            
+            const response = await fetch(apiUrl);
+            const data = await response.json();
 
-            // ヒーロー画像の更新
+            // ▼▼▼ ② JSONの構造に合わせてキー名（.hero.imageUrl など）を書き換えてください ▼▼▼
             document.getElementById('hero-img').src = data.hero.imageUrl;
             document.getElementById('hero-title').textContent = data.hero.title;
 
-            // リストの自動生成
+            
             const container = document.getElementById('program-container');
-            container.innerHTML = ''; // クリア
+            container.innerHTML = ''; 
 
-            data.programs.forEach(program => {
+            // ▼▼▼ ③ リストのループ処理（.programs など）を書き換えてください ▼▼▼
+            data.movieList.forEach(program => {
                 const li = document.createElement('li');
                 li.className = 'program-item';
                 
-                // 画像によってラベルの色を変えるロジック（青:特選, オレンジ:見逃し）
                 const labelBg = program.type === '特選' ? 'var(--border-blue)' : 'var(--accent-orange)';
 
                 li.innerHTML = `
                     <div class="program-thumb">
-                        <img src="${program.imageUrl}" alt="${program.title}">
+                        <img src="${program.thumbnailUrl}" alt="${program.title}">
                         <div class="thumb-label" style="background-color: ${labelBg}">${program.type}</div>
                     </div>
                     <div class="program-info">
@@ -227,12 +184,12 @@
             });
         } catch (error) {
             console.error("APIの読み込みに失敗しました:", error);
+            document.getElementById('hero-title').textContent = "データ取得エラー";
         }
     }
 
-    // ページ読み込み時に実行
+    // ページ読み込み時に自動実行
     document.addEventListener('DOMContentLoaded', updateProgramList);
 </script>
 </body>
 </html>
-
