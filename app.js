@@ -93,11 +93,14 @@ function showPremiumCinema(programs) {
 
     }
 
-    // ヒーロー
-    createHero(movies[0]);
+// ヒーロー
+createHero(movies[0]);
 
-    // 一覧
-    createProgramList(movies);
+// 一覧
+createProgramList(movies);
+
+// カレンダー
+createCalendar(movies);
 
 }
 
