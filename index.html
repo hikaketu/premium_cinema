@@ -2,96 +2,132 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>プレミアムシネマファン</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-    margin:0;
-    background:#111;
-    color:white;
-    font-family:sans-serif;
-}
-header{
-    background:#003366;
-    padding:20px;
-}
-h1{
-    margin:0;
-}
-nav{
-    background:#222;
-    padding:10px;
-}
-nav a{
-    color:white;
-    margin-right:20px;
-    text-decoration:none;
-}
-main{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
-.card{
-    background:#1e1e1e;
-    padding:20px;
-    margin:20px 0;
-    border-radius:10px;
-}
-button{
-    padding:10px 20px;
-}
-</style>
+<title>プレミアムシネマ</title>
+
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header>
-<h1>プレミアムシネマファン</h1>
+    <div class="logo">
+        プレミアムシネマ
+    </div>
+
+    <nav>
+        <a href="#today">放送予定</a>
+        <a href="#calendar">映画カレンダー</a>
+        <a href="column.html">シネフィルコラム</a>
+    </nav>
 </header>
 
-<nav>
-<a href="#">放送予定</a>
-<a href="#">映画カレンダー</a>
-<a href="#">シネフィルコラム</a>
-<a href="#">作品検索</a>
-</nav>
+<section class="hero">
+
+    <div class="hero-image">
+        <img id="heroImage" src="noimage.png" alt="">
+    </div>
+
+    <div class="hero-text">
+
+        <h1 id="heroTitle">
+            今週のプレミアムシネマ
+        </h1>
+
+        <p id="heroDate"></p>
+
+        <p id="heroDescription"></p>
+
+        <div class="hero-buttons">
+
+            <a id="nhkLink"
+               href="#"
+               target="_blank"
+               class="button">
+               NHKで見る
+            </a>
+
+            <a href="https://www.nhk.or.jp/uts/premium_cinema/form.html"
+               target="_blank"
+               class="button">
+               映画リクエスト
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
 
 <main>
 
-<div class="card">
-<h2>最新放送予定</h2>
-<div id="movies">
+<section id="today">
+
+<h2>
+今後の放送予定
+</h2>
+
+<div id="programList">
+
+<div class="loading">
 読み込み中...
 </div>
+
 </div>
 
-<div class="card">
-<h2>映画カレンダー</h2>
-<div id="calendar"></div>
+</section>
+
+<section id="calendar">
+
+<h2>
+映画カレンダー
+</h2>
+
+<div id="calendarArea">
+
 </div>
 
-<div class="card">
-<h2>シネフィルコラム</h2>
+</section>
 
-<h3>今週の一本</h3>
+<section>
+
+<h2>
+シネフィルコラム
+</h2>
+
+<div class="column-box">
 
 <p>
-映画の見どころや監督紹介などを掲載できます。
+
+プレミアムシネマに関するコラムや映画紹介を掲載します。
+
 </p>
 
+<a href="column.html" class="button">
+
+もっと見る
+
+</a>
+
 </div>
+
+</section>
 
 </main>
 
-<script>
-document.getElementById("movies").innerHTML =
-"ここに放送予定を表示";
+<footer>
 
-document.getElementById("calendar").innerHTML =
-"カレンダー表示";
-</script>
+<p>
+
+© Premium Cinema Fan Site
+
+</p>
+
+</footer>
+
+<script src="app.js"></script>
+<script src="calendar.js"></script>
 
 </body>
-  </html>
+</html>
