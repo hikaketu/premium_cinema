@@ -1,0 +1,27 @@
+name: 自動データ更新
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 毎日朝9時(日本時間)に自動実行
+  workflow_dispatch: # 手動で動かすボタンを有効化
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリの読み込み
+        uses: actions/checkout@v3
+
+      - name: APIからデータを取得してファイル保存
+        run: |
+          # 取得したいAPIのURLを指定（ここにAPI URLを貼る）
+          curl -s "https://program-api.nhk.jp/v3/papiPgNowTv?service=tv&area=130&key=TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn" > program.json
+
+      - name: 変更を自動保存
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add program.json
+          git commit -m "番組表データを自動更新" || exit 0
+          git push
+
