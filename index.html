@@ -520,18 +520,72 @@
         });
     }
 
+/* --- 番組表データ取得 & リスト描画 --- */
 async function fetchProgramTable() {
     try {
-        // 自動生成された program.json を読み込み（CORSエラーを完全回避）
+        // GitHub Actionsで生成された program.json を取得
         const res = await fetch('./program.json');
+        if (!res.ok) throw new Error("program.jsonが見つかりません");
+
         const data = await res.json();
-        
-        renderPrograms(formatApiData(data));
+        let formattedData = formatApiData(data);
+
+        // データが0件またはうまく変換できなかった場合はサンプルを表示
+        if (!formattedData || formattedData.length === 0) {
+            console.log("データ構造が合わないためフォールバックを表示します");
+            formattedData = fallbackPrograms;
+        }
+
+        renderPrograms(formattedData);
     } catch (err) {
-        console.log(err.message);
+        console.log("読み込みエラー:", err.message);
+        // エラー時もサンプルを表示
         renderPrograms(fallbackPrograms);
     }
 }
+
+/* --- 様々な形式のJSONデータを画面用データに変換する関数 --- */
+function formatApiData(data) {
+    if (!data) return [];
+
+    // 1. すでに配列形式（[ {...}, {...} ]）の場合
+    if (Array.isArray(data)) return data;
+
+    // 2. NHK API (v2) の場合 (data.list.g1 など)
+    let list = data?.list?.g1 || data?.list?.e1 || data?.list?.b1 || data?.list?.s1;
+
+    // 3. NHK API (v3 / NowOnAir) の場合 (data.nowonair など)
+    if (!list && data?.nowonair) {
+        const g1 = data.nowonair.g1 || data.nowonair.b1;
+        list = [];
+        if (g1?.present) list.push(g1.present);
+        if (g1?.following) list.push(g1.following);
+    }
+
+    // それでも配列が取れなかった場合
+    if (!list || !Array.isArray(list)) return [];
+
+    return list.map(item => {
+        let dateStr = "放送日時未定";
+        if (item.start_time) {
+            const startTime = new Date(item.start_time);
+            const month = startTime.getMonth() + 1;
+            const date = startTime.getDate();
+            const hours = String(startTime.getHours()).padStart(2, '0');
+            const minutes = String(startTime.getMinutes()).padStart(2, '0');
+            dateStr = `${month}月${date}日 ${hours}:${minutes}`;
+        }
+
+        return {
+            title: item.title || "番組タイトルなし",
+            subtitle: item.subtitle || item.content || "",
+            date: dateStr,
+            desc: item.content || item.act || "詳細情報はありません。",
+            img: item.service_logo?.url || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
+        };
+    });
+}
+
     
 /* --- NHK APIなどのJSONデータを画面用データに変換する関数 --- */
 function formatApiData(data) {
