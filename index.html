@@ -520,28 +520,19 @@
         });
     }
 
-    /* --- 番組表API取得 & リスト描画 --- */
-    async function fetchProgramTable() {
-        const listContainer = document.getElementById('programList');
+async function fetchProgramTable() {
+    try {
+        // 自動生成された program.json を読み込み（CORSエラーを完全回避）
+        const res = await fetch('./program.json');
+        const data = await res.json();
         
-        // NHK API等のキーやCORSProxyを設定する場合の構成
-        const API_KEY = "TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn"; // NHK API Keyを入れる場合はここに設定
-        const API_URL = `https://program-api.nhk.jp/v3/papiPgNowTv?service=tv&area=130&key=TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn`;
-
-        try {
-            if (!API_KEY) throw new Error("API Key未設定のためフォールバックデータを使用します");
-
-            const res = await fetch(https://program-api.nhk.jp/v3/papiPgNowTv?service=tv&area=130&key=TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn);
-            const data = await res.json();
-            
-            // APIデータを整形して描画
-            renderPrograms(formatApiData(data));
-        } catch (err) {
-            console.log(err.message);
-            // API利用不能・未設定時は自動的にフォールバックデータ（今週の映画リスト）を表示
-            renderPrograms(fallbackPrograms);
-        }
+        renderPrograms(formatApiData(data));
+    } catch (err) {
+        console.log(err.message);
+        renderPrograms(fallbackPrograms);
     }
+}
+
 
     function renderPrograms(programs) {
         const listContainer = document.getElementById('programList');
