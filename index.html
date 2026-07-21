@@ -525,13 +525,13 @@
         const listContainer = document.getElementById('programList');
         
         // NHK API等のキーやCORSProxyを設定する場合の構成
-        const API_KEY = ""; // NHK API Keyを入れる場合はここに設定
-        const API_URL = `https://api.nhk.or.jp/v2/pg/list/130/g1/now.json?key=${API_KEY}`;
+        const API_KEY = "TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn"; // NHK API Keyを入れる場合はここに設定
+        const API_URL = `https://program-api.nhk.jp/v3/papiPgNowTv?service=tv&area=130&key=TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn`;
 
         try {
-            if (!API_KEY) throw new Error("API Key未設定のためフォールバックデータを使用します");
+            if (!TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn) throw new Error("API Key未設定のためフォールバックデータを使用します");
 
-            const res = await fetch(API_URL);
+            const res = await fetch(https://program-api.nhk.jp/v3/papiPgNowTv?service=tv&area=130&key=TuGXdS7cAwmFNxA0ntWELmFQr2Dok5Xn);
             const data = await res.json();
             
             // APIデータを整形して描画
