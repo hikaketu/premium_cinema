@@ -532,6 +532,34 @@ async function fetchProgramTable() {
         renderPrograms(fallbackPrograms);
     }
 }
+/* --- NHK APIなどのJSONデータを画面用データに変換する関数 --- */
+function formatApiData(data) {
+    // すでに整理済みの配列ならそのまま使う
+    if (Array.isArray(data)) return data;
+
+    // NHK API構造から番組リストを取り出す
+    const list = data?.list?.g1 || data?.list?.e1 || data?.list?.b1 || data?.list?.s1 || [];
+
+    return list.map(item => {
+        let dateStr = "放送日時未定";
+        if (item.start_time) {
+            const startTime = new Date(item.start_time);
+            const month = startTime.getMonth() + 1;
+            const date = startTime.getDate();
+            const hours = String(startTime.getHours()).padStart(2, '0');
+            const minutes = String(startTime.getMinutes()).padStart(2, '0');
+            dateStr = `${month}月${date}日 ${hours}:${minutes}`;
+        }
+
+        return {
+            title: item.title || "番組タイトルなし",
+            subtitle: item.subtitle || item.content || "",
+            date: dateStr,
+            desc: item.content || item.act || "詳細情報はありません。",
+            img: item.service_logo?.url || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
+        };
+    });
+}
 
 
     function renderPrograms(programs) {
