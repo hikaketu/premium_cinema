@@ -544,23 +544,53 @@ async function fetchProgramTable() {
     }
 }
 
-/* --- 様々な形式のJSONデータを画面用データに変換する関数 --- */
+/* --- どんな構造のJSONからでも番組データを自動抽出する万能関数 --- */
 function formatApiData(data) {
     if (!data) return [];
 
-    // 1. すでに配列形式（[ {...}, {...} ]）の場合
-    if (Array.isArray(data)) return data;
-
-    // 2. NHK API (v2) の場合 (data.list.g1 など)
-    let list = data?.list?.g1 || data?.list?.e1 || data?.list?.b1 || data?.list?.s1;
-
-    // 3. NHK API (v3 / NowOnAir) の場合 (data.nowonair など)
-    if (!list && data?.nowonair) {
-        const g1 = data.nowonair.g1 || data.nowonair.b1;
-        list = [];
-        if (g1?.present) list.push(g1.present);
-        if (g1?.following) list.push(g1.following);
+    // JSON内の全階層から title を持つ番組データを探し出す
+    const items = [];
+    function extractItems(obj) {
+        if (!obj || typeof obj !== 'object') return;
+        if (Array.isArray(obj)) {
+            obj.forEach(extractItems);
+            return;
+        }
+        // title プロパティを持っていれば番組データとして回収
+        if (obj.title && typeof obj.title === 'string') {
+            items.push(obj);
+            return;
+        }
+        Object.values(obj).forEach(extractItems);
     }
+
+    extractItems(data);
+
+    // 見つからない場合は空を返す
+    if (items.length === 0) return [];
+
+    // 画面表示用にデータを整える
+    return items.map(item => {
+        let dateStr = "放送日時未定";
+        if (item.start_time) {
+            const startTime = new Date(item.start_time);
+            const month = startTime.getMonth() + 1;
+            const date = startTime.getDate();
+            const hours = String(startTime.getHours()).padStart(2, '0');
+            const minutes = String(startTime.getMinutes()).padStart(2, '0');
+            dateStr = `${month}月${date}日 ${hours}:${minutes}`;
+        }
+
+        return {
+            title: item.title || "番組タイトルなし",
+            subtitle: item.subtitle || item.content || item.description || "",
+            date: dateStr,
+            desc: item.content || item.act || item.description || "詳細情報はありません。",
+            img: item.service_logo?.url || item.thumbnail || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
+        };
+    });
+}
+
 
     // それでも配列が取れなかった場合
     if (!list || !Array.isArray(list)) return [];
