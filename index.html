@@ -541,51 +541,21 @@
         }
     }
 
-    /* --- 5. JSONデータ抽出関数 --- */
-    function formatApiData(data) {
-        if (!data) return [];
+function formatApiData(data) {
+    if (!data) return [];
 
-        const items = [];
-        function extractItems(obj) {
-            if (!obj || typeof obj !== 'object') return;
-            if (Array.isArray(obj)) {
-                obj.forEach(extractItems);
-                return;
-            }
-            if (obj.title && typeof obj.title === 'string') {
-                items.push(obj);
-                return;
-            }
-            Object.values(obj).forEach(extractItems);
-        }
-
-        extractItems(data);
-
-        if (items.length === 0) return [];
-
-        return items.map(item => {
-            let dateStr = "放送日時未定";
-            if (item.start_time) {
-                const startTime = new Date(item.start_time);
-                const month = startTime.getMonth() + 1;
-                const date = startTime.getDate();
-                const hours = String(startTime.getHours()).padStart(2, '0');
-                const minutes = String(startTime.getMinutes()).padStart(2, '0');
-                dateStr = `${month}月${date}日 ${hours}:${minutes}`;
-            }
-
-            return {
-                title: item.title || "番組タイトルなし",
-                subtitle: item.subtitle || item.content || item.description || "",
-                date: dateStr,
-                desc: item.content || item.act || item.description || "詳細情報はありません。",
-                img: item.service_logo?.url || item.thumbnail || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
-            };
-        });
-    }
-
-    /* --- 6. リスト描画機能 --- */
-    function renderPrograms(programs) {
+    // 全階層から番組データを収集
+    const allItems = [];
+    ...(中略)...
+        return {
+            title: item.title || "作品タイトルなし",
+            subtitle: item.subtitle || item.content || item.description || "",
+            date: dateStr,
+            desc: item.content || item.act || item.description || "詳細情報はありません。",
+            img: imgUrl
+        };
+    });
+}
         const listContainer = document.getElementById('programList');
         if (!listContainer) return;
         
