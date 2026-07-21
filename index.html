@@ -421,7 +421,7 @@
 </div>
 
 <script>
-    /* --- おすすめ映画（スライダーデータ） --- */
+    /* --- 1. おすすめ映画（スライダーデータ） --- */
     const recommendedMovies = [
         {
             title: "あまちゃん",
@@ -446,7 +446,7 @@
         }
     ];
 
-    /* --- 今週放送する映画（APIデータフォールバック付き） --- */
+    /* --- 2. バックアップ用データ --- */
     const fallbackPrograms = [
         {
             title: "あまちゃん",
@@ -478,21 +478,23 @@
         }
     ];
 
-    /* --- スライダー実装 --- */
+    /* --- 3. スライダー機能 --- */
     let currentSlide = 0;
     function initSlider() {
         const container = document.getElementById('sliderContainer');
         const dotsContainer = document.getElementById('sliderDots');
+        if (!container || !dotsContainer) return;
+
+        container.innerHTML = '';
+        dotsContainer.innerHTML = '';
 
         recommendedMovies.forEach((movie, index) => {
-            // スライド要素生成
             const slide = document.createElement('div');
             slide.className = 'slide-item';
             slide.onclick = () => openModal(movie);
             slide.innerHTML = `<img src="${movie.img}" alt="${movie.title}">`;
             container.appendChild(slide);
 
-            // ドット生成
             const dot = document.createElement('div');
             dot.className = `dot ${index === 0 ? 'active' : ''}`;
             dotsContainer.appendChild(dot);
@@ -500,7 +502,6 @@
 
         updateSlider();
 
-        // 自動スライド (4秒間隔)
         setInterval(() => {
             currentSlide = (currentSlide + 1) % recommendedMovies.length;
             updateSlider();
@@ -512,143 +513,82 @@
         const dots = document.querySelectorAll('.dot');
         const caption = document.getElementById('sliderCaption');
 
-        container.style.transform = `translateX(-${currentSlide * 100}%)`;
-        caption.innerText = recommendedMovies[currentSlide].title;
+        if (container) container.style.transform = `translateX(-${currentSlide * 100}%)`;
+        if (caption) caption.innerText = recommendedMovies[currentSlide].title;
 
         dots.forEach((dot, idx) => {
             dot.classList.toggle('active', idx === currentSlide);
         });
     }
 
-/* --- 番組表データ取得 & リスト描画 --- */
-async function fetchProgramTable() {
-    try {
-        // GitHub Actionsで生成された program.json を取得
-        const res = await fetch('./program.json');
-        if (!res.ok) throw new Error("program.jsonが見つかりません");
+    /* --- 4. データ取得機能 --- */
+    async function fetchProgramTable() {
+        try {
+            const res = await fetch('./program.json');
+            if (!res.ok) throw new Error("program.jsonが見つかりません");
 
-        const data = await res.json();
-        let formattedData = formatApiData(data);
+            const data = await res.json();
+            let formattedData = formatApiData(data);
 
-        // データが0件またはうまく変換できなかった場合はサンプルを表示
-        if (!formattedData || formattedData.length === 0) {
-            console.log("データ構造が合わないためフォールバックを表示します");
-            formattedData = fallbackPrograms;
+            if (!formattedData || formattedData.length === 0) {
+                formattedData = fallbackPrograms;
+            }
+
+            renderPrograms(formattedData);
+        } catch (err) {
+            console.log("読み込み通知:", err.message);
+            renderPrograms(fallbackPrograms);
         }
-
-        renderPrograms(formattedData);
-    } catch (err) {
-        console.log("読み込みエラー:", err.message);
-        // エラー時もサンプルを表示
-        renderPrograms(fallbackPrograms);
-    }
-}
-
-/* --- どんな構造のJSONからでも番組データを自動抽出する万能関数 --- */
-function formatApiData(data) {
-    if (!data) return [];
-
-    // JSON内の全階層から title を持つ番組データを探し出す
-    const items = [];
-    function extractItems(obj) {
-        if (!obj || typeof obj !== 'object') return;
-        if (Array.isArray(obj)) {
-            obj.forEach(extractItems);
-            return;
-        }
-        // title プロパティを持っていれば番組データとして回収
-        if (obj.title && typeof obj.title === 'string') {
-            items.push(obj);
-            return;
-        }
-        Object.values(obj).forEach(extractItems);
     }
 
-    extractItems(data);
+    /* --- 5. JSONデータ抽出関数 --- */
+    function formatApiData(data) {
+        if (!data) return [];
 
-    // 見つからない場合は空を返す
-    if (items.length === 0) return [];
-
-    // 画面表示用にデータを整える
-    return items.map(item => {
-        let dateStr = "放送日時未定";
-        if (item.start_time) {
-            const startTime = new Date(item.start_time);
-            const month = startTime.getMonth() + 1;
-            const date = startTime.getDate();
-            const hours = String(startTime.getHours()).padStart(2, '0');
-            const minutes = String(startTime.getMinutes()).padStart(2, '0');
-            dateStr = `${month}月${date}日 ${hours}:${minutes}`;
+        const items = [];
+        function extractItems(obj) {
+            if (!obj || typeof obj !== 'object') return;
+            if (Array.isArray(obj)) {
+                obj.forEach(extractItems);
+                return;
+            }
+            if (obj.title && typeof obj.title === 'string') {
+                items.push(obj);
+                return;
+            }
+            Object.values(obj).forEach(extractItems);
         }
 
-        return {
-            title: item.title || "番組タイトルなし",
-            subtitle: item.subtitle || item.content || item.description || "",
-            date: dateStr,
-            desc: item.content || item.act || item.description || "詳細情報はありません。",
-            img: item.service_logo?.url || item.thumbnail || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
-        };
-    });
-}
+        extractItems(data);
 
+        if (items.length === 0) return [];
 
-    // それでも配列が取れなかった場合
-    if (!list || !Array.isArray(list)) return [];
+        return items.map(item => {
+            let dateStr = "放送日時未定";
+            if (item.start_time) {
+                const startTime = new Date(item.start_time);
+                const month = startTime.getMonth() + 1;
+                const date = startTime.getDate();
+                const hours = String(startTime.getHours()).padStart(2, '0');
+                const minutes = String(startTime.getMinutes()).padStart(2, '0');
+                dateStr = `${month}月${date}日 ${hours}:${minutes}`;
+            }
 
-    return list.map(item => {
-        let dateStr = "放送日時未定";
-        if (item.start_time) {
-            const startTime = new Date(item.start_time);
-            const month = startTime.getMonth() + 1;
-            const date = startTime.getDate();
-            const hours = String(startTime.getHours()).padStart(2, '0');
-            const minutes = String(startTime.getMinutes()).padStart(2, '0');
-            dateStr = `${month}月${date}日 ${hours}:${minutes}`;
-        }
+            return {
+                title: item.title || "番組タイトルなし",
+                subtitle: item.subtitle || item.content || item.description || "",
+                date: dateStr,
+                desc: item.content || item.act || item.description || "詳細情報はありません。",
+                img: item.service_logo?.url || item.thumbnail || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
+            };
+        });
+    }
 
-        return {
-            title: item.title || "番組タイトルなし",
-            subtitle: item.subtitle || item.content || "",
-            date: dateStr,
-            desc: item.content || item.act || "詳細情報はありません。",
-            img: item.service_logo?.url || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
-        };
-    });
-}
-
-    
-/* --- NHK APIなどのJSONデータを画面用データに変換する関数 --- */
-function formatApiData(data) {
-    // すでに整理済みの配列ならそのまま使う
-    if (Array.isArray(data)) return data;
-
-    // NHK API構造から番組リストを取り出す
-    const list = data?.list?.g1 || data?.list?.e1 || data?.list?.b1 || data?.list?.s1 || [];
-
-    return list.map(item => {
-        let dateStr = "放送日時未定";
-        if (item.start_time) {
-            const startTime = new Date(item.start_time);
-            const month = startTime.getMonth() + 1;
-            const date = startTime.getDate();
-            const hours = String(startTime.getHours()).padStart(2, '0');
-            const minutes = String(startTime.getMinutes()).padStart(2, '0');
-            dateStr = `${month}月${date}日 ${hours}:${minutes}`;
-        }
-
-        return {
-            title: item.title || "番組タイトルなし",
-            subtitle: item.subtitle || item.content || "",
-            date: dateStr,
-            desc: item.content || item.act || "詳細情報はありません。",
-            img: item.service_logo?.url || "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80"
-        };
-    });
-}
-
-
+    /* --- 6. リスト描画機能 --- */
     function renderPrograms(programs) {
         const listContainer = document.getElementById('programList');
+        if (!listContainer) return;
+        
         listContainer.innerHTML = '';
 
         programs.forEach(item => {
@@ -669,7 +609,7 @@ function formatApiData(data) {
         });
     }
 
-    /* --- モーダル（詳細表示）機能 --- */
+    /* --- 7. モーダル（詳細表示）機能 --- */
     function openModal(item) {
         document.getElementById('modalImg').src = item.img;
         document.getElementById('modalTitle').innerText = item.title;
@@ -682,7 +622,6 @@ function formatApiData(data) {
         document.getElementById('detailModal').style.display = 'none';
     }
 
-    // モーダル背景クリックで閉じる
     window.onclick = function(event) {
         const modal = document.getElementById('detailModal');
         if (event.target === modal) {
@@ -690,7 +629,7 @@ function formatApiData(data) {
         }
     }
 
-    // 初期化実行
+    /* --- 8. 初期化実行 --- */
     window.onload = function() {
         initSlider();
         fetchProgramTable();
